@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.market.dao.SupplierDao">
+    <select id="findAll" resultType="com.lx.market.bean.Supplier">
+        select * from supplier
+    </select>
+    <insert id="save" parameterType="com.lx.market.bean.Supplier">
+        insert  into supplier(sup_id,sup_name,sup_description,sup_contact,sup_phone,sup_fax,sup_address)
+        values (#{supId},#{supName},#{supDescription},#{supContact},#{supPhone},#{supFax},#{supAddress})
+    </insert>
+    <select id="findById" parameterType="string" resultType="com.lx.market.bean.Supplier">
+        select * from supplier where sup_id=#{supId}
+    </select>
+    <update id="update" parameterType="com.lx.market.bean.Supplier">
+        update supplier set sup_name=#{supName},sup_description=#{supDescription},sup_contact=#{supContact},
+                            sup_phone=#{supPhone},sup_fax=#{supFax},sup_address=#{supAddress}
+                        where sup_id = #{supId}
+    </update>
+    <delete id="delete" >
+        delete from supplier where sup_id=#{supId}
+    </delete>
+    <!--根据供应商名称或者供应商描述进行模糊查询-->
+    <select id="findSupNameLike" resultType="com.lx.market.bean.Supplier">
+        select * from supplier where sup_name like "%"#{supName}"%" or sup_description like "%"#{supDescription}"%"
+    </select>
+    <select id="findSupByName" resultType="com.lx.market.bean.Supplier">
+        select * from supplier where sup_name=#{supName};
+    </select>
+    <select id="findBySupName" resultType="com.lx.market.bean.Supplier">
+        select * from supplier where sup_name=#{supName}
+    </select>
+
+</mapper>

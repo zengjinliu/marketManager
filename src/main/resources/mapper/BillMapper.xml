@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lx.market.dao.BillDao">
+
+    <!--关联查询。多个账单对应一个供应商-->
+    <resultMap id="resultBillMap" type="com.lx.market.bean.Bill">
+        <result property="billId" column="bill_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="productAmount" column="product_amount"/>
+        <result property="dealPrice" column="deal_price"/>
+        <result property="payStatus" column="pay_status"/>
+        <result property="dealUnit" column="deal_unit"/>
+        <result property="supId" column="sup_id"/>
+        <result property="creatTime" column="creat_time"/>
+        <result property="productDescription" column="product_description"/>
+        <association property="supplier" javaType="com.lx.market.bean.Supplier">
+            <id property="supId" column="sup_id"/>
+            <result property="supName" column="sup_name"/>
+            <result property="supDescription" column="sup_description"/>
+        </association>
+    </resultMap>
+    <select id="findSup" resultMap="resultBillMap">
+        select * from bill b join supplier s on b.sup_id=s.sup_id
+    </select>
+
+    <!--删除指定账单-->
+    <delete id="deleteById" >
+        delete from bill where bill_id = #{billId};
+    </delete>
+    <!--添加账单-->
+    <insert id="addBill" parameterType="com.lx.market.bean.Bill">
+        insert into bill(bill_id,deal_price,deal_unit,product_amount,product_name,product_description,pay_status,sup_id)
+         values(#{billId},#{dealPrice},#{dealUnit},#{productAmount},#{productName},#{productDescription},#{payStatus},#{supId})
+    </insert>
+    <!--查询所有账单-->
+    <select id="findAll" resultType="com.lx.market.bean.Bill">
+        select * from bill
+    </select>
+    <!--根据id查询单个账单-->
+    <select id="preLookBill" resultType="com.lx.market.bean.Bill">
+        select * from bill where bill_id = #{billId}
+    </select>
+    <!--模糊查询 两者同时满足-->
+    <select id="findLikeBill" parameterType="Map" resultMap="resultBillMap" >
+        select * from bill b join supplier s on b.sup_id=s.sup_id where b.product_name like "%"#{word}"%" and b.pay_status like "%"#{payStatus}"%"
+    </select>
+    <!--根据支付状态进行模糊查询-->
+    <select id="findLikeBillByPayStatus" resultMap="resultBillMap">
+       select * from bill b join supplier s on b.sup_id=s.sup_id  where b.pay_status like "%"#{payStatus}"%"
+    </select>
+    <!--更新账单-->
+    <update id="update" parameterType="com.lx.market.bean.Bill">
+        update bill set deal_price=#{dealPrice},deal_unit=#{dealUnit},product_amount=#{productAmount},product_name=#{productName},
+        product_description=#{productDescription},pay_status=#{payStatus},sup_id=#{supId} where sup_id =#{supId}
+    </update>
+</mapper>

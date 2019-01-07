@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lx.market.dao.UserDao">
+    <!--1：查询所有用户-->
+        <select id="findAll" resultType="com.lx.market.bean.User">
+            select * from user
+        </select>
+    <!--2：根据用户名查询用户-->
+        <select id="findByName" resultType="com.lx.market.bean.User">
+            select * from user where username=#{username}
+        </select>
+    <!--3：新增用户-->
+    <insert id="save" parameterType="com.lx.market.bean.User">
+        insert into user(user_id,username,password,sex,age,user_phone,user_address,user_right)
+                        values (#{userId},#{username},#{password},#{sex},#{age},#{userPhone},#{userAddress},#{userRight})
+    </insert>
+    <!--4：删除用户-->
+    <delete id="deleteByName" parameterType="string">
+        delete from user where username = #{username}
+    </delete>
+    <!--5：跟新用户-->
+    <update id="update" >
+        update user set username=#{username},password=#{password},sex=#{sex},age=#{age},user_phone=#{userPhone},user_address=#{userAddress}
+                  where user_id=#{userId}
+    </update>
+    <!--6：模糊查询-->
+    <select id="findLike" resultType="com.lx.market.bean.User">
+        select * from  user where username like "%"#{keyWord}"%"
+    </select>
+    <!--7:预览用户-->
+    <select id="preLook" resultType="com.lx.market.bean.User">
+        select * from user where user_id = #{userId}
+    </select>
+</mapper>

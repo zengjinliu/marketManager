@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+<!--1:配置组件扫描-->
+    <context:component-scan base-package="com.lx.market"/>
+
+    <!--2:配置注解扫描-->
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+    <mvc:default-servlet-handler></mvc:default-servlet-handler>
+
+    <!--3:配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!--1:配置securityManager-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="jdbcRealm"></property>
+    </bean>
+    <!--2:配置realm-->
+    <bean id="jdbcRealm" class="com.lx.market.realms.ShiroRealm">
+        <!--MD5盐值加密-->
+        <property name="credentialsMatcher" >
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="MD5"/>
+                <property name="hashIterations" value="1024"/>
+            </bean>
+        </property>
+    </bean>
+    <!--3:配置配置LifeCycleBeanPostProccessor-->
+    <bean id="lifeCycleBeanPostProccessor"
+          class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
+    <!--4:启用IOC容器注解-->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifeCycleBeanPostProccessor"></bean>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+    <!--5:配置shiroFilter-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="index.jsp"/>
+        <property name="filterChainDefinitions">
+            <value>
+                /css/* = anon
+                /images/* = anon
+                /js/* = anon
+                /index.jsp = anon
+                /login = anon
+                /users = anon
+                /userDetail = anon
+                /addUser = anon
+                /edit = anon
+                /modUser = anon
+                /findLike = anon
+                /preLook = anon
+                /index = anon
+                /clear = anon
+                /editUser = anon
+                /logout = logout
+                /deleteOne = anon
+                /supplierList = anon
+                /supplierDetail = anon
+                /update = anon
+                /exportExcel = anon
+                /billList = anon
+                /delBill = anon
+                /goAddBill = anon
+                /addBill = anon
+                /exportExcelBill = anon
+                /preLookBill = anon
+                /editBill = anon
+
+                /** = authc
+            </value>
+        </property>
+    </bean>
+
+
+
+
+</beans>
